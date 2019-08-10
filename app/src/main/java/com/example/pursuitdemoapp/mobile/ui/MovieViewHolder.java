@@ -9,19 +9,24 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.pursuitdemoapp.model.Movie;
+import com.squareup.picasso.Picasso;
 
 public class MovieViewHolder extends RecyclerView.ViewHolder {
+
+    private static final String MOVIE_IMAGE_URL_PREFIX = "https://image.tmdb.org/t/p/w342/";
 
     ImageView image;
     TextView title;
 
-    public MovieViewHolder(@NonNull View itemView) {
-        super(itemView);
-        title = itemView.findViewById(R.id.movie_title);
-        image = itemView.findViewById(R.id.movie_image);
+    public MovieViewHolder(View view) {
+        super(view);
+        image = view.findViewById(R.id.movie_image);
+        title = view.findViewById(R.id.movie_title);
     }
 
     public void bind(Movie movie) {
-
+        String moviePosterUrl = MOVIE_IMAGE_URL_PREFIX + movie.poster_path;
+        Picasso.get().load(moviePosterUrl).into(image);
+        title.setText(movie.title);
     }
 }

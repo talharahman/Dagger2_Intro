@@ -2,17 +2,26 @@ package com.example.pursuitdemoapp.mobile.ui;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.widget.LinearLayout;
-import com.example.pursuitdemoapp.R;
-import com.example.pursuitdemoapp.api.MovieService;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.pursuitdemoapp.R;
+import com.example.pursuitdemoapp.api.MovieService;
+import com.example.pursuitdemoapp.model.MovieResponse;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
+
+import static com.example.pursuitdemoapp.api.MovieService.API_KEY;
 
 public class HomeView extends LinearLayout {
 
@@ -27,7 +36,8 @@ public class HomeView extends LinearLayout {
         super(context, attrs);
     }
 
-    @Override protected void onFinishInflate() {
+    @Override
+    protected void onFinishInflate() {
         super.onFinishInflate();
 
         nowPlayingRecyclerView = findViewById(R.id.now_playing);
@@ -44,7 +54,8 @@ public class HomeView extends LinearLayout {
         mostPopularRecyclerView.setAdapter(mostPopularAdapter);
     }
 
-    @Override protected void onAttachedToWindow() {
+    @Override
+    protected void onAttachedToWindow() {
         super.onAttachedToWindow();
 
         Retrofit retrofit = new Retrofit.Builder()
@@ -52,5 +63,42 @@ public class HomeView extends LinearLayout {
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         movieService = retrofit.create(MovieService.class);
+
+        Call<MovieResponse> nowPlayingMovies = movieService.getNowPlayingMovies(API_KEY);
+        nowPlayingMovies.enqueue(new Callback<MovieResponse>() {
+            @Override
+            public void onResponse(Call<MovieResponse> call, Response<MovieResponse> response) {
+                if (response.isSuccessful()) {
+                    MovieResponse movieResponse = response.body();
+                    nowPlayingAdapter.setData(movieResponse.results);
+                    Toast.makeText(getContext(), "Results " + movieResponse.results, Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<MovieResponse> call, Throwable t) {
+                Log.e("C4Q", "Error obtaining movies", t);
+                Toast.makeText(getContext(), "Error obtaining movies", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        Call<MovieResponse> popularMovies = movieService.getPopularMovies(API_KEY);
+        popularMovies.enqueue(new Callback<MovieResponse>() {
+            @Override
+            public void onResponse(Call<MovieResponse> call, Response<MovieResponse> response) {
+                if (response.isSuccessful()) {
+                    MovieResponse movieResponse = response.body();
+                    mostPopularAdapter.setData(movieResponse.results);
+                    Toast.makeText(getContext(), "Results " + movieResponse.results, Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<MovieResponse> call, Throwable t) {
+                Log.e("C4Q", "Error obtaining movies", t);
+                Toast.makeText(getContext(), "Error obtaining movies", Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 }
+

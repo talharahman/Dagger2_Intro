@@ -8,7 +8,7 @@ import retrofit2.http.Query;
 
 public interface MovieService {
 
-    String API_KEY = "PASTE YOUR API KEY HERE";
+    String API_KEY = "8d30f27b9281b7f7375920bf57e34806";
 
     @GET("movie/now_playing")
     Call<MovieResponse> getNowPlayingMovies(@Query("api_key") String key);
