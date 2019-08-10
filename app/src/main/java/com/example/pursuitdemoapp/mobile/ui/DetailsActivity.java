@@ -2,11 +2,11 @@ package com.example.pursuitdemoapp.mobile.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.pursuitdemoapp.BuildConfig;
 import com.example.pursuitdemoapp.R;
 
 import androidx.annotation.Nullable;
@@ -14,7 +14,10 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.pursuitdemoapp.api.MovieService;
 import com.example.pursuitdemoapp.model.MovieDetails;
+import com.example.pursuitdemoapp.model.Review;
+import com.example.pursuitdemoapp.model.ReviewResponse;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.squareup.picasso.Picasso;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -49,22 +52,19 @@ public class DetailsActivity extends AppCompatActivity {
 
         Intent intent = getIntent();
 
-        int movieId = intent.getIntExtra("movie_id", 0);
-        System.out.println("movieId: " + movieId);
+        final int movieId = intent.getIntExtra("movie_id", 0);
 
-       // final int movieId = intent.getIntExtra("movie_id", 0);
-
-
-  /*      Retrofit retrofit = new Retrofit.Builder()
+        Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("https://api.themoviedb.org/3/")
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
         movieService = retrofit.create(MovieService.class);
 
         Call<MovieDetails> movieDetails =
-                movieService.getMovieDetails(movieId, BuildConfig.MOVIE_DATABASE_API_KEY);
+                movieService.getMovieDetails(movieId, MovieService.API_KEY);
         movieDetails.enqueue(new Callback<MovieDetails>() {
-            @Override public void onResponse(Call<MovieDetails> call, Response<MovieDetails> response) {
+            @Override
+            public void onResponse(Call<MovieDetails> call, Response<MovieDetails> response) {
                 if (response.isSuccessful()) {
                     MovieDetails details = response.body();
 
@@ -79,7 +79,8 @@ public class DetailsActivity extends AppCompatActivity {
                 }
             }
 
-            @Override public void onFailure(Call<MovieDetails> call, Throwable t) {
+            @Override
+            public void onFailure(Call<MovieDetails> call, Throwable t) {
                 Log.e("C4Q", "Error obtaining movie details", t);
             }
         });
@@ -87,7 +88,7 @@ public class DetailsActivity extends AppCompatActivity {
 
     private void loadExtraDetails(int movieId) {
         Call<ReviewResponse> reviewsCall =
-                movieService.getReviews(movieId, BuildConfig.MOVIE_DATABASE_API_KEY);
+                movieService.getReviews(movieId, MovieService.API_KEY);
         reviewsCall.enqueue(new Callback<ReviewResponse>() {
             @Override
             public void onResponse(Call<ReviewResponse> call, Response<ReviewResponse> response) {
@@ -101,11 +102,11 @@ public class DetailsActivity extends AppCompatActivity {
                 }
             }
 
-            @Override public void onFailure(Call<ReviewResponse> call, Throwable t) {
+            @Override
+            public void onFailure(Call<ReviewResponse> call, Throwable t) {
                 Log.e("C4Q", "Error obtaining movie reviews", t);
             }
         });
-    }*/
-
     }
+
 }
