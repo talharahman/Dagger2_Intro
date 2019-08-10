@@ -37,6 +37,8 @@ public class MovieViewHolder extends RecyclerView.ViewHolder {
 
                 Intent intent = new Intent(context, DetailsActivity.class);
                 intent.putExtra("movie_id", movie.id);
+                intent.putExtra("poster_path", movie.poster_path);
+                intent.putExtra("title", movie.title);
                 context.startActivity(intent);
             }
         });

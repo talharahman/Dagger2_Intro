@@ -3,6 +3,7 @@ package com.example.pursuitdemoapp.mobile.ui;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -13,6 +14,8 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.pursuitdemoapp.api.MovieService;
+import com.example.pursuitdemoapp.db.FavoritesDatabaseHelper;
+import com.example.pursuitdemoapp.model.Movie;
 import com.example.pursuitdemoapp.model.MovieDetails;
 import com.example.pursuitdemoapp.model.Review;
 import com.example.pursuitdemoapp.model.ReviewResponse;
@@ -36,6 +39,7 @@ public class DetailsActivity extends AppCompatActivity {
     private ViewGroup reviews;
     private FloatingActionButton fab;
     private MovieService movieService;
+    private FavoritesDatabaseHelper databaseHelper;
 
     @Override
     protected void onCreate(@Nullable Bundle bundle) {
@@ -50,9 +54,26 @@ public class DetailsActivity extends AppCompatActivity {
         reviews = findViewById(R.id.reviews);
         fab = findViewById(R.id.fab);
 
+        databaseHelper = FavoritesDatabaseHelper.getInstance(this);
+
         Intent intent = getIntent();
 
         final int movieId = intent.getIntExtra("movie_id", 0);
+        final String posterPath = intent.getStringExtra("poster_path");
+        final String title = intent.getStringExtra("title");
+
+        boolean isFavorite = databaseHelper.isFavorite(movieId);
+        fab.setImageResource(isFavorite ? R.drawable.ic_done : R.drawable.ic_save);
+
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override public void onClick(View v) {
+                boolean isFavorite = databaseHelper.isFavorite(movieId);
+                if (!isFavorite) {
+                    databaseHelper.addFavorite(Movie.from(movieId, posterPath, title));
+                    fab.setImageResource(R.drawable.ic_done);
+                }
+            }
+        });
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl("https://api.themoviedb.org/3/")
