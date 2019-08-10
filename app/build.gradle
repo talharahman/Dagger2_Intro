@@ -4,11 +4,11 @@ android {
     compileSdkVersion 28
     defaultConfig {
         applicationId "org.pursuit.pursuitdemoapp"
-        minSdkVersion 15
+        minSdkVersion 25
         targetSdkVersion 28
     }
 }
 
 dependencies {
-    implementation 'androidx.appcompat:app:appcompat:1.0.2'
+    implementation 'androidx.appcompat:appcompat:1.0.2'
 }
