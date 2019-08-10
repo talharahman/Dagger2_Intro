@@ -68,7 +68,10 @@ public class DetailsActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override public void onClick(View v) {
                 boolean isFavorite = databaseHelper.isFavorite(movieId);
-                if (!isFavorite) {
+                if (isFavorite) {
+                    databaseHelper.deleteFavorite(movieId);
+                    fab.setImageResource(R.drawable.ic_save);
+                } else {
                     databaseHelper.addFavorite(Movie.from(movieId, posterPath, title));
                     fab.setImageResource(R.drawable.ic_done);
                 }

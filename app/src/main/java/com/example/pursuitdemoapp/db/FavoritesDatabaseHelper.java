@@ -11,6 +11,9 @@ import androidx.annotation.Nullable;
 
 import com.example.pursuitdemoapp.model.Movie;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class FavoritesDatabaseHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "favoritesDatabase";
@@ -62,6 +65,16 @@ public class FavoritesDatabaseHelper extends SQLiteOpenHelper {
         }
     }
 
+    public void deleteFavorite(int movieId) {
+        SQLiteDatabase db = getWritableDatabase();
+
+        try {
+            db.delete(TABLE_FAVORITES, "movieId = ?", new String[] { String.valueOf(movieId) });
+        } catch (Exception e) {
+            Log.e("C4Q", "Error while trying to delete all posts and users", e);
+        }
+    }
+
     public boolean isFavorite(int movieId) {
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor =
@@ -84,5 +97,29 @@ public class FavoritesDatabaseHelper extends SQLiteOpenHelper {
         }
 
         return count != 0;
+    }
+
+    public List<Movie> getFavorites() {
+        List<Movie> favorites = new ArrayList<>();
+
+        SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor = db.rawQuery("SELECT * FROM " + TABLE_FAVORITES, null);
+        try {
+            if (cursor.moveToFirst()) {
+                do {
+                    int movieId = cursor.getInt(cursor.getColumnIndex("movieId"));
+                    String posterPath = cursor.getString(cursor.getColumnIndex("posterPath"));
+                    String title = cursor.getString(cursor.getColumnIndex("title"));
+                    favorites.add(Movie.from(movieId, posterPath, title));
+                } while (cursor.moveToNext());
+            }
+        } catch (Exception e) {
+            Log.e("C4Q", "Error while trying to get favorites from database", e);
+        } finally {
+            if (cursor != null && !cursor.isClosed()) {
+                cursor.close();
+            }
+        }
+        return favorites;
     }
 }

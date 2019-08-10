@@ -45,12 +45,12 @@ public class HomeView extends LinearLayout {
 
         nowPlayingRecyclerView.setLayoutManager(
                 new LinearLayoutManager(getContext(), HORIZONTAL, false));
-        nowPlayingAdapter = new MovieAdapter();
+        nowPlayingAdapter = new MovieAdapter(R.layout.movie_list_item);
         nowPlayingRecyclerView.setAdapter(nowPlayingAdapter);
 
         mostPopularRecyclerView.setLayoutManager(
                 new LinearLayoutManager(getContext(), HORIZONTAL, false));
-        mostPopularAdapter = new MovieAdapter();
+        mostPopularAdapter = new MovieAdapter(R.layout.movie_list_item);
         mostPopularRecyclerView.setAdapter(mostPopularAdapter);
     }
 
