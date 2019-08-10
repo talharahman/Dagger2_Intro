@@ -71,7 +71,7 @@ public class HomeView extends LinearLayout {
                 if (response.isSuccessful()) {
                     MovieResponse movieResponse = response.body();
                     nowPlayingAdapter.setData(movieResponse.results);
-                    Toast.makeText(getContext(), "Results " + movieResponse.results, Toast.LENGTH_SHORT).show();
+                //    Toast.makeText(getContext(), "Results " + movieResponse.results, Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -89,7 +89,6 @@ public class HomeView extends LinearLayout {
                 if (response.isSuccessful()) {
                     MovieResponse movieResponse = response.body();
                     mostPopularAdapter.setData(movieResponse.results);
-                    Toast.makeText(getContext(), "Results " + movieResponse.results, Toast.LENGTH_SHORT).show();
                 }
             }
 

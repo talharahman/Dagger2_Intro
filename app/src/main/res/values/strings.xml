@@ -5,4 +5,5 @@
     <string name="now_playing">Now Playing</string>
     <string name="most_popular">Most Popular</string>
     <string name="no_favorites_yet">No favorites yet! 😞</string>
+    <string name="reviews_label">Reviews</string>
 </resources>

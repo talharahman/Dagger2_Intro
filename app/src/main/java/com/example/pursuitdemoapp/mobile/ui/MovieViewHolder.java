@@ -1,5 +1,7 @@
 package com.example.pursuitdemoapp.mobile.ui;
 
+import android.content.Context;
+import android.content.Intent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -24,9 +26,19 @@ public class MovieViewHolder extends RecyclerView.ViewHolder {
         title = view.findViewById(R.id.movie_title);
     }
 
-    public void bind(Movie movie) {
+    public void bind(final Movie movie) {
         String moviePosterUrl = MOVIE_IMAGE_URL_PREFIX + movie.poster_path;
         Picasso.get().load(moviePosterUrl).into(image);
         title.setText(movie.title);
+
+        itemView.setOnClickListener(new View.OnClickListener() {
+            @Override public void onClick(View v) {
+                Context context = itemView.getContext();
+
+                Intent intent = new Intent(context, DetailsActivity.class);
+                intent.putExtra("movie_id", movie.id);
+                context.startActivity(intent);
+            }
+        });
     }
 }
