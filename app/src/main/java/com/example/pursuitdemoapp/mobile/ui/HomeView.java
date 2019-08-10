@@ -1,5 +1,6 @@
 package com.example.pursuitdemoapp.mobile.ui;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -13,15 +14,12 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.pursuitdemoapp.R;
 import com.example.pursuitdemoapp.api.MovieService;
-import com.example.pursuitdemoapp.model.MovieResponse;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.schedulers.Schedulers;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -38,6 +36,7 @@ public class HomeView extends LinearLayout {
     private MovieAdapter nowPlayingAdapter;
     private MovieAdapter mostPopularAdapter;
     private MovieService movieService;
+    private CompositeDisposable disposables = new CompositeDisposable();
 
     public HomeView(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
@@ -60,6 +59,7 @@ public class HomeView extends LinearLayout {
         mostPopularRecyclerView.setAdapter(mostPopularAdapter);
     }
 
+
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
@@ -71,7 +71,8 @@ public class HomeView extends LinearLayout {
                 .build();
         movieService = retrofit.create(MovieService.class);
 
-        movieService.getNowPlayingMovies(API_KEY)
+        disposables.add(
+                movieService.getNowPlayingMovies(API_KEY)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         movieResponse -> {
@@ -80,9 +81,10 @@ public class HomeView extends LinearLayout {
                         t -> {
                             Log.e("C4Q", "Error obtaining movies", t);
                             Toast.makeText(getContext(), "Error obtaining movies", Toast.LENGTH_SHORT).show();
-                        });
+                        }));
 
-        movieService.getPopularMovies(API_KEY)
+        disposables.add(
+                movieService.getPopularMovies(API_KEY)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         movieResponse -> {
@@ -91,7 +93,7 @@ public class HomeView extends LinearLayout {
                         t -> {
                             Log.e("C4Q", "Error obtaining movies", t);
                             Toast.makeText(getContext(), "Error obtaining movies", Toast.LENGTH_SHORT).show();
-                        });
+                        }));
 
         /*
         Call<MovieResponse> nowPlayingMovies = movieService.getNowPlayingMovies(API_KEY);
@@ -101,7 +103,7 @@ public class HomeView extends LinearLayout {
                 if (response.isSuccessful()) {
                     MovieResponse movieResponse = response.body();
                     nowPlayingAdapter.setData(movieResponse.results);
-                //    Toast.makeText(getContext(), "Results " + movieResponse.results, Toast.LENGTH_SHORT).show();
+                //  Toast.makeText(getContext(), "Results " + movieResponse.results, Toast.LENGTH_SHORT).show();
                 }
             }
 
@@ -111,9 +113,9 @@ public class HomeView extends LinearLayout {
                 Toast.makeText(getContext(), "Error obtaining movies", Toast.LENGTH_SHORT).show();
             }
         });
-        */
 
-     /*   Call<MovieResponse> popularMovies = movieService.getPopularMovies(API_KEY);
+
+        Call<MovieResponse> popularMovies = movieService.getPopularMovies(API_KEY);
         popularMovies.enqueue(new Callback<MovieResponse>() {
             @Override
             public void onResponse(Call<MovieResponse> call, Response<MovieResponse> response) {
@@ -128,7 +130,14 @@ public class HomeView extends LinearLayout {
                 Log.e("C4Q", "Error obtaining movies", t);
                 Toast.makeText(getContext(), "Error obtaining movies", Toast.LENGTH_SHORT).show();
             }
-        });*/
+        });
+       */
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        disposables.dispose();
     }
 }
 

@@ -1,5 +1,6 @@
 package com.example.pursuitdemoapp.mobile.ui;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -21,6 +22,8 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.squareup.picasso.Picasso;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.disposables.Disposable;
 import io.reactivex.schedulers.Schedulers;
 import retrofit2.Retrofit;
 import butterknife.BindView;
@@ -48,7 +51,9 @@ public class DetailsActivity extends AppCompatActivity {
 
     private MovieService movieService;
     private FavoritesDatabaseHelper databaseHelper;
+    private CompositeDisposable disposables = new CompositeDisposable();
 
+    @SuppressLint("CheckResult")
     @Override
     protected void onCreate(@Nullable Bundle bundle) {
         super.onCreate(bundle);
@@ -66,17 +71,14 @@ public class DetailsActivity extends AppCompatActivity {
         boolean isFavorite = databaseHelper.isFavorite(movieId);
         fab.setImageResource(isFavorite ? R.drawable.ic_done : R.drawable.ic_save);
 
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                boolean isFavorite = databaseHelper.isFavorite(movieId);
-                if (isFavorite) {
-                    databaseHelper.deleteFavorite(movieId);
-                    fab.setImageResource(R.drawable.ic_save);
-                } else {
-                    databaseHelper.addFavorite(Movie.from(movieId, posterPath, title));
-                    fab.setImageResource(R.drawable.ic_done);
-                }
+        fab.setOnClickListener(v -> {
+            boolean isFavorite1 = databaseHelper.isFavorite(movieId);
+            if (isFavorite1) {
+                databaseHelper.deleteFavorite(movieId);
+                fab.setImageResource(R.drawable.ic_save);
+            } else {
+                databaseHelper.addFavorite(Movie.from(movieId, posterPath, title));
+                fab.setImageResource(R.drawable.ic_done);
             }
         });
 
@@ -87,7 +89,16 @@ public class DetailsActivity extends AppCompatActivity {
                 .build();
         movieService = retrofit.create(MovieService.class);
 
-        movieService.getMovieDetails(movieId, MovieService.API_KEY)
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        Intent intent = getIntent();
+        int movieId = intent.getIntExtra("movie_id", 0);
+
+        disposables.add(movieService.getMovieDetails(movieId, MovieService.API_KEY)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         details -> {
@@ -97,11 +108,15 @@ public class DetailsActivity extends AppCompatActivity {
                             releaseDateView.setText(details.release_date);
                             ratingView.setText(String.valueOf(details.vote_average));
                             overviewView.setText(details.overview);
+
+                            loadExtraDetails(movieId);
                         },
                         t -> Log.e("C4Q", "Error obtaining movie details", t)
-                );
+                ));
+    }
 
-        movieService.getReviews(movieId, MovieService.API_KEY)
+    private void loadExtraDetails(int movieId) {
+        disposables.add(movieService.getReviews(movieId, MovieService.API_KEY)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(
                         reviewResponse -> {
@@ -112,66 +127,12 @@ public class DetailsActivity extends AppCompatActivity {
                             }
                         },
                         t -> Log.e("C4Q", "Error obtaining movie reviews", t)
-                );
-
-      /*
-      old retrofit call
-
-      Call<MovieDetails> movieDetails =
-                movieService.getMovieDetails(movieId, MovieService.API_KEY);
-        movieDetails.enqueue(new Callback<MovieDetails>() {
-            @Override
-            public void onResponse(Call<MovieDetails> call, Response<MovieDetails> response) {
-                if (response.isSuccessful()) {
-                    MovieDetails details = response.body();
-
-                    String backdropPath = MOVIE_BACKDROP_URL_PREFIX + details.backdrop_path;
-                    Picasso.get().load(backdropPath).into(imageView);
-                    titleView.setText(details.title);
-                    releaseDateView.setText(details.release_date);
-                    ratingView.setText(String.valueOf(details.vote_average));
-                    overviewView.setText(details.overview);
-
-                    loadExtraDetails(movieId);
-                }
-            }
-
-            @Override
-            public void onFailure(Call<MovieDetails> call, Throwable t) {
-                Log.e("C4Q", "Error obtaining movie details", t);
-            }
-        });
-    }
-
-    private void loadExtraDetails(int movieId) {
-        Call<ReviewResponse> reviewsCall =
-                movieService.getReviews(movieId, MovieService.API_KEY);
-        reviewsCall.enqueue(new Callback<ReviewResponse>() {
-            @Override
-            public void onResponse(Call<ReviewResponse> call, Response<ReviewResponse> response) {
-                if (response.isSuccessful()) {
-                    ReviewResponse reviewResponse = response.body();
-                    for (Review review : reviewResponse.results) {
-                        TextView reviewView = new TextView(DetailsActivity.this);
-                        reviewView.setText(review.content);
-                        reviews.addView(reviewView);
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(Call<ReviewResponse> call, Throwable t) {
-                Log.e("C4Q", "Error obtaining movie reviews", t);
-            }
-        });*/
+                ));
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
-
-        Intent intent = getIntent();
-        int movieId = intent.getIntExtra("movie_id", 0);
-
+    protected void onPause() {
+        super.onPause();
+        disposables.dispose();
     }
 }
