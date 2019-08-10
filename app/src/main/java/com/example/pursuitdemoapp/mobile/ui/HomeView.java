@@ -1,6 +1,7 @@
 package com.example.pursuitdemoapp.mobile.ui;
 
 import android.annotation.SuppressLint;
+import android.app.Application;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -14,6 +15,9 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.pursuitdemoapp.R;
 import com.example.pursuitdemoapp.api.MovieService;
+import com.example.pursuitdemoapp.mobile.PursuitDemoApp;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -35,7 +39,8 @@ public class HomeView extends LinearLayout {
 
     private MovieAdapter nowPlayingAdapter;
     private MovieAdapter mostPopularAdapter;
-    private MovieService movieService;
+
+    @Inject MovieService movieService;
     private CompositeDisposable disposables = new CompositeDisposable();
 
     public HomeView(@NonNull Context context, @Nullable AttributeSet attrs) {
@@ -47,6 +52,7 @@ public class HomeView extends LinearLayout {
         super.onFinishInflate();
 
         ButterKnife.bind(this);
+        ((PursuitDemoApp) getContext().getApplicationContext()).component().inject(this);
 
         nowPlayingRecyclerView.setLayoutManager(
                 new LinearLayoutManager(getContext(), HORIZONTAL, false));
@@ -64,12 +70,6 @@ public class HomeView extends LinearLayout {
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
 
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://api.themoviedb.org/3/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.createWithScheduler(Schedulers.io()))
-                .build();
-        movieService = retrofit.create(MovieService.class);
 
         disposables.add(
                 movieService.getNowPlayingMovies(API_KEY)

@@ -1,6 +1,7 @@
 package com.example.pursuitdemoapp.mobile.ui;
 
 import android.annotation.SuppressLint;
+import android.app.Application;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -16,10 +17,14 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.pursuitdemoapp.api.MovieService;
 import com.example.pursuitdemoapp.db.FavoritesDatabaseHelper;
+import com.example.pursuitdemoapp.mobile.PursuitDemoApp;
+import com.example.pursuitdemoapp.mobile.PursuitDemoAppComponent;
 import com.example.pursuitdemoapp.model.Movie;
 import com.example.pursuitdemoapp.model.Review;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.squareup.picasso.Picasso;
+
+import javax.inject.Inject;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
@@ -49,7 +54,7 @@ public class DetailsActivity extends AppCompatActivity {
     @BindView(R.id.fab)
     FloatingActionButton fab;
 
-    private MovieService movieService;
+    @Inject MovieService movieService;
     private FavoritesDatabaseHelper databaseHelper;
     private CompositeDisposable disposables = new CompositeDisposable();
 
@@ -61,6 +66,9 @@ public class DetailsActivity extends AppCompatActivity {
 
         ButterKnife.bind(this);
         databaseHelper = FavoritesDatabaseHelper.getInstance(this);
+
+        Application application = getApplication();
+        ((PursuitDemoApp) application).component().inject(this);
 
         Intent intent = getIntent();
 
@@ -82,12 +90,6 @@ public class DetailsActivity extends AppCompatActivity {
             }
         });
 
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("https://api.themoviedb.org/3/")
-                .addConverterFactory(GsonConverterFactory.create())
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.createWithScheduler(Schedulers.io()))
-                .build();
-        movieService = retrofit.create(MovieService.class);
 
     }
 

@@ -12,6 +12,7 @@ import androidx.annotation.Nullable;
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.example.pursuitdemoapp.mobile.PursuitDemoApp;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 import butterknife.BindView;
@@ -40,11 +41,9 @@ public class MainActivity extends AppCompatActivity {
 
         ButterKnife.bind(this);
 
-        // set the initial view and action bar text
         container.addView(homeView);
         actionBar.setTitle(R.string.home_title);
 
-        // logic to switch views upon tab click
         bottomNavigationView.setOnNavigationItemSelectedListener(
                 menuItem -> {
                     // based on tab click, decide whether to show home or favorites view
