@@ -15,6 +15,9 @@ public class HomeView extends LinearLayout {
     private RecyclerView nowPlayingRecyclerView;
     private RecyclerView mostPopularRecyclerView;
 
+    private MovieAdapter nowPlayingAdapter;
+    private MovieAdapter mostPopularAdapter;
+
     public HomeView(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
     }
@@ -27,7 +30,12 @@ public class HomeView extends LinearLayout {
 
         nowPlayingRecyclerView.setLayoutManager(
                 new LinearLayoutManager(getContext(), HORIZONTAL, false));
+        nowPlayingAdapter = new MovieAdapter();
+        nowPlayingRecyclerView.setAdapter(nowPlayingAdapter);
+
         mostPopularRecyclerView.setLayoutManager(
                 new LinearLayoutManager(getContext(), HORIZONTAL, false));
+        mostPopularAdapter = new MovieAdapter();
+        mostPopularRecyclerView.setAdapter(mostPopularAdapter);
     }
 }
