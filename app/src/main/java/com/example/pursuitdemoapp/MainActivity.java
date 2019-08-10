@@ -46,28 +46,26 @@ public class MainActivity extends AppCompatActivity {
 
         // logic to switch views upon tab click
         bottomNavigationView.setOnNavigationItemSelectedListener(
-                new BottomNavigationView.OnNavigationItemSelectedListener() {
-                    @Override public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
-                        // based on tab click, decide whether to show home or favorites view
-                        switch (menuItem.getItemId()) {
-                            case R.id.action_home:
-                                container.removeAllViews();
-                                container.addView(homeView);
-                                actionBar.setTitle(R.string.home_title);
-                                break;
-                            case R.id.action_favorites:
-                                container.removeAllViews();
-                                container.addView(favoritesView);
-                                actionBar.setTitle(R.string.favorites_title);
-                                break;
-                            default:
-                                throw new IllegalStateException(
-                                        "Unknown menu item id: " + getResources().getResourceName(menuItem.getItemId())
-                                );
-                        }
-
-                        return true;
+                menuItem -> {
+                    // based on tab click, decide whether to show home or favorites view
+                    switch (menuItem.getItemId()) {
+                        case R.id.action_home:
+                            container.removeAllViews();
+                            container.addView(homeView);
+                            actionBar.setTitle(R.string.home_title);
+                            break;
+                        case R.id.action_favorites:
+                            container.removeAllViews();
+                            container.addView(favoritesView);
+                            actionBar.setTitle(R.string.favorites_title);
+                            break;
+                        default:
+                            throw new IllegalStateException(
+                                    "Unknown menu item id: " + getResources().getResourceName(menuItem.getItemId())
+                            );
                     }
+
+                    return true;
                 });
     }
 }

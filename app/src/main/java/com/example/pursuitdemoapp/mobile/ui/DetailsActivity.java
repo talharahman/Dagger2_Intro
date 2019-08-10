@@ -16,17 +16,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.pursuitdemoapp.api.MovieService;
 import com.example.pursuitdemoapp.db.FavoritesDatabaseHelper;
 import com.example.pursuitdemoapp.model.Movie;
-import com.example.pursuitdemoapp.model.MovieDetails;
 import com.example.pursuitdemoapp.model.Review;
-import com.example.pursuitdemoapp.model.ReviewResponse;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.squareup.picasso.Picasso;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.schedulers.Schedulers;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 import retrofit2.Retrofit;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -36,13 +31,20 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class DetailsActivity extends AppCompatActivity {
     private static final String MOVIE_BACKDROP_URL_PREFIX = "https://image.tmdb.org/t/p/w1280/";
 
-    @BindView(R.id.image) ImageView imageView;
-    @BindView(R.id.title) TextView titleView;
-    @BindView(R.id.release_date) TextView releaseDateView;
-    @BindView(R.id.rating) TextView ratingView;
-    @BindView(R.id.overview) TextView overviewView;
-    @BindView(R.id.reviews) ViewGroup reviews;
-    @BindView(R.id.fab) FloatingActionButton fab;
+    @BindView(R.id.image)
+    ImageView imageView;
+    @BindView(R.id.title)
+    TextView titleView;
+    @BindView(R.id.release_date)
+    TextView releaseDateView;
+    @BindView(R.id.rating)
+    TextView ratingView;
+    @BindView(R.id.overview)
+    TextView overviewView;
+    @BindView(R.id.reviews)
+    ViewGroup reviews;
+    @BindView(R.id.fab)
+    FloatingActionButton fab;
 
     private MovieService movieService;
     private FavoritesDatabaseHelper databaseHelper;
@@ -65,7 +67,8 @@ public class DetailsActivity extends AppCompatActivity {
         fab.setImageResource(isFavorite ? R.drawable.ic_done : R.drawable.ic_save);
 
         fab.setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View v) {
+            @Override
+            public void onClick(View v) {
                 boolean isFavorite = databaseHelper.isFavorite(movieId);
                 if (isFavorite) {
                     databaseHelper.deleteFavorite(movieId);
@@ -163,4 +166,12 @@ public class DetailsActivity extends AppCompatActivity {
         });*/
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        Intent intent = getIntent();
+        int movieId = intent.getIntExtra("movie_id", 0);
+
+    }
 }

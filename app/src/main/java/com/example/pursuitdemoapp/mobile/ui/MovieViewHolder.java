@@ -32,16 +32,14 @@ public class MovieViewHolder extends RecyclerView.ViewHolder {
         Picasso.get().load(moviePosterUrl).into(image);
         title.setText(movie.title);
 
-        itemView.setOnClickListener(new View.OnClickListener() {
-            @Override public void onClick(View v) {
-                Context context = itemView.getContext();
+        itemView.setOnClickListener(v -> {
+            Context context = itemView.getContext();
 
-                Intent intent = new Intent(context, DetailsActivity.class);
-                intent.putExtra("movie_id", movie.id);
-                intent.putExtra("poster_path", movie.poster_path);
-                intent.putExtra("title", movie.title);
-                context.startActivity(intent);
-            }
+            Intent intent = new Intent(context, DetailsActivity.class);
+            intent.putExtra("movie_id", movie.id);
+            intent.putExtra("poster_path", movie.poster_path);
+            intent.putExtra("title", movie.title);
+            context.startActivity(intent);
         });
     }
 }
