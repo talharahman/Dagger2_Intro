@@ -14,10 +14,13 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class MainActivity extends AppCompatActivity {
 
-    private ViewGroup container;
-    private BottomNavigationView bottomNavigationView;
+    @BindView(R.id.container) ViewGroup container;
+    @BindView(R.id.bottom_navigation) BottomNavigationView bottomNavigationView;
 
     private View homeView;
     private View favoritesView;
@@ -35,8 +38,7 @@ public class MainActivity extends AppCompatActivity {
         homeView = layoutInflater.inflate(R.layout.view_home, null);
         favoritesView = layoutInflater.inflate(R.layout.view_favorites, null);
 
-        container = findViewById(R.id.container);
-        bottomNavigationView = findViewById(R.id.bottom_navigation);
+        ButterKnife.bind(this);
 
         // set the initial view and action bar text
         container.addView(homeView);

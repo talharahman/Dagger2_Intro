@@ -15,10 +15,13 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class FavoritesView extends FrameLayout {
 
-    private RecyclerView favoritesRecyclerView;
-    private TextView emptyView;
+    @BindView(R.id.favorites) RecyclerView favoritesRecyclerView;
+    @BindView(R.id.empty) TextView emptyView;
     private MovieAdapter favoritesAdapter;
 
     public FavoritesView(@NonNull Context context, @Nullable AttributeSet attrs) {
@@ -28,8 +31,7 @@ public class FavoritesView extends FrameLayout {
     @Override protected void onFinishInflate() {
         super.onFinishInflate();
 
-        favoritesRecyclerView = findViewById(R.id.favorites);
-        emptyView = findViewById(R.id.empty);
+        ButterKnife.bind(this);
 
         favoritesRecyclerView.setLayoutManager(
                 new LinearLayoutManager(getContext(), RecyclerView.HORIZONTAL, false));

@@ -7,23 +7,24 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import com.example.pursuitdemoapp.R;
 
-import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.pursuitdemoapp.model.Movie;
 import com.squareup.picasso.Picasso;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class MovieViewHolder extends RecyclerView.ViewHolder {
 
     private static final String MOVIE_IMAGE_URL_PREFIX = "https://image.tmdb.org/t/p/w342/";
 
-    ImageView image;
-    TextView title;
+    @BindView(R.id.movie_image) ImageView image;
+    @BindView(R.id.movie_title) TextView title;
 
     public MovieViewHolder(View view) {
         super(view);
-        image = view.findViewById(R.id.movie_image);
-        title = view.findViewById(R.id.movie_title);
+        ButterKnife.bind(this, view);
     }
 
     public void bind(final Movie movie) {

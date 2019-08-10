@@ -15,6 +15,8 @@ import com.example.pursuitdemoapp.R;
 import com.example.pursuitdemoapp.api.MovieService;
 import com.example.pursuitdemoapp.model.MovieResponse;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -25,8 +27,8 @@ import static com.example.pursuitdemoapp.api.MovieService.API_KEY;
 
 public class HomeView extends LinearLayout {
 
-    private RecyclerView nowPlayingRecyclerView;
-    private RecyclerView mostPopularRecyclerView;
+    @BindView(R.id.now_playing) RecyclerView nowPlayingRecyclerView;
+    @BindView(R.id.most_popular) RecyclerView mostPopularRecyclerView;
 
     private MovieAdapter nowPlayingAdapter;
     private MovieAdapter mostPopularAdapter;
@@ -40,8 +42,7 @@ public class HomeView extends LinearLayout {
     protected void onFinishInflate() {
         super.onFinishInflate();
 
-        nowPlayingRecyclerView = findViewById(R.id.now_playing);
-        mostPopularRecyclerView = findViewById(R.id.most_popular);
+        ButterKnife.bind(this);
 
         nowPlayingRecyclerView.setLayoutManager(
                 new LinearLayoutManager(getContext(), HORIZONTAL, false));
