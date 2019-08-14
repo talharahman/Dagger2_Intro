@@ -11,6 +11,7 @@ import androidx.annotation.Nullable;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 
 import com.example.pursuitdemoapp.mobile.PursuitDemoApp;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -20,19 +21,16 @@ import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity {
 
+    @BindView(R.id.toolbar) Toolbar toolbar;
     @BindView(R.id.container) ViewGroup container;
     @BindView(R.id.bottom_navigation) BottomNavigationView bottomNavigationView;
 
     private View homeView;
     private View favoritesView;
 
-    private ActionBar actionBar;
-
     @Override protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        actionBar = getSupportActionBar();
 
         LayoutInflater layoutInflater = getLayoutInflater();
 
@@ -42,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
         ButterKnife.bind(this);
 
         container.addView(homeView);
-        actionBar.setTitle(R.string.home_title);
+        toolbar.setTitle(R.string.home_title);
 
         bottomNavigationView.setOnNavigationItemSelectedListener(
                 menuItem -> {
@@ -51,12 +49,12 @@ public class MainActivity extends AppCompatActivity {
                         case R.id.action_home:
                             container.removeAllViews();
                             container.addView(homeView);
-                            actionBar.setTitle(R.string.home_title);
+                            toolbar.setTitle(R.string.home_title);
                             break;
                         case R.id.action_favorites:
                             container.removeAllViews();
                             container.addView(favoritesView);
-                            actionBar.setTitle(R.string.favorites_title);
+                            toolbar.setTitle(R.string.favorites_title);
                             break;
                         default:
                             throw new IllegalStateException(
